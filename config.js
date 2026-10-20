@@ -34,6 +34,25 @@ window.CONFIG = {
     'คณะสหเวชศาสตร์',
   ],
 
+  // ชื่อคณะภาษาอังกฤษ (แสดงในหน้าผู้ดูแล)
+  FACULTIES_EN: {
+    'คณะจิตรกรรม ประติมากรรมและภาพพิมพ์': 'Faculty of Painting Sculpture and Graphic Arts',
+    'คณะสถาปัตยกรรมศาสตร์': 'Faculty of Architecture',
+    'คณะโบราณคดี': 'Faculty of Archaeology',
+    'คณะมัณฑนศิลป์': 'Faculty of Decorative Arts',
+    'คณะอักษรศาสตร์': 'Faculty of Arts',
+    'คณะศึกษาศาสตร์': 'Faculty of Education',
+    'คณะวิทยาศาสตร์': 'Faculty of Science',
+    'คณะเภสัชศาสตร์': 'Faculty of Pharmacy',
+    'คณะวิศวกรรมศาสตร์และเทคโนโลยีอุตสาหกรรม': 'Faculty of Engineering and Industrial Technology',
+    'คณะดุริยางคศาสตร์': 'Faculty of Music',
+    'คณะสัตวศาสตร์และเทคโนโลยีการเกษตร': 'Faculty of Animal Sciences and Agricultural Technology',
+    'คณะวิทยาการจัดการ': 'Faculty of Management Sciences',
+    'คณะเทคโนโลยีสารสนเทศและการสื่อสาร': 'Faculty of Information and Communication Technology',
+    'วิทยาลัยนานาชาติ': 'International College',
+    'คณะสหเวชศาสตร์': 'Faculty of Allied Health Sciences',
+  },
+
   // ต้องตรงกับ STATUSES ใน Code.gs
   STATUSES: ['รอตรวจสอบ', 'รับเรื่องแล้ว', 'กำลังจัดทำบัตร', 'บัตรพร้อมรับ', 'รับบัตรแล้ว', 'ไม่อนุมัติ'],
   CLOSED_STATUSES: ['รับบัตรแล้ว', 'ไม่อนุมัติ'],

@@ -132,6 +132,7 @@ async function openDetail(id) {
     <dt>ชื่อ</dt><dd>${UI.esc(UI.fullName(r))}</dd>
     <dt>รหัส นศ.</dt><dd>${UI.esc(r.studentId)}</dd>
     <dt>คณะวิชา</dt><dd>${UI.esc(r.faculty)}</dd>
+    <dt>Faculty</dt><dd>${UI.esc(CONFIG.FACULTIES_EN[r.faculty] || '-')}</dd>
     <dt>รับบัตรที่</dt><dd>${UI.esc(r.pickupLocation)}</dd>
     <dt>โทรศัพท์</dt><dd><a href="tel:${UI.esc(r.phone)}">${UI.esc(r.phone)}</a></dd>
     <dt>อีเมล</dt><dd><a href="mailto:${UI.esc(r.email)}">${UI.esc(r.email)}</a></dd>
@@ -189,7 +190,7 @@ async function onUpdate(e) {
 function exportCsv() {
   const rows = filtered();
   const head = ['เลขที่คำร้อง', 'วันที่ยื่น', 'อีเมล', 'สถานที่รับบัตรนักศึกษา', 'เบอร์โทรศัพท์',
-    'คำนำหน้า ชื่อ - นามสกุล', 'รหัสนักศึกษา', 'คณะวิชา', 'เหตุผลในการขอทำบัตรนักศึกษา',
+    'คำนำหน้า ชื่อ - นามสกุล', 'รหัสนักศึกษา', 'คณะวิชา', 'Faculty', 'เหตุผลในการขอทำบัตรนักศึกษา',
     'สถานะ', 'หมายเหตุ', 'อัปเดตล่าสุด', 'ชื่อ LINE'];
   const cell = v => {
     let s = String(v == null ? '' : v);
@@ -198,7 +199,7 @@ function exportCsv() {
   };
   const lines = [head.map(cell).join(',')].concat(rows.map(r => [
     r.requestId, UI.fmt(r.createdAt), r.email, r.pickupLocation, r.phone,
-    r.fullName, r.studentId, r.faculty, r.reason,
+    r.fullName, r.studentId, r.faculty, CONFIG.FACULTIES_EN[r.faculty] || '', r.reason,
     r.status, r.note, UI.fmt(r.updatedAt), r.displayName,
   ].map(cell).join(',')));
   const blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });

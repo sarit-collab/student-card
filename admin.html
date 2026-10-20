@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ผู้ดูแลระบบบัตรนักศึกษา</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+  <script src="common.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><div class="logo">ID</div>ผู้ดูแล · คำร้องขอทำบัตรนักศึกษา</div>
+    <div class="spacer"></div>
+    <button class="btn sm" id="logoutBtn" type="button" hidden>ออกจากระบบ</button>
+    <button class="icon-btn" id="themeBtn" type="button"></button>
+  </header>
+
+  <main class="container wide">
+    <section id="loginView" class="card" style="max-width:400px;margin:40px auto">
+      <h2>เข้าสู่ระบบผู้ดูแล</h2>
+      <p class="muted small">สำหรับเจ้าหน้าที่ตรวจสอบและจัดการคำร้อง</p>
+      <form id="loginForm">
+        <div class="field">
+          <label for="password">รหัสผ่าน</label>
+          <input class="input" type="password" id="password" autocomplete="current-password" required>
+        </div>
+        <button class="btn primary block" id="loginBtn" type="submit">เข้าสู่ระบบ</button>
+      </form>
+    </section>
+
+    <section id="dashView" hidden>
+      <div class="stats" id="stats"></div>
+
+      <div class="card">
+        <div class="toolbar">
+          <input class="input" id="search" type="search" placeholder="ค้นหา เลขที่คำร้อง / ชื่อ / รหัสนักศึกษา / เบอร์โทร">
+          <select class="input" id="facultyFilter" style="flex:0 1 260px"><option value="">ทุกคณะ</option></select>
+          <button class="btn sm" id="refreshBtn" type="button">รีเฟรช</button>
+          <button class="btn sm" id="exportBtn" type="button">ส่งออก CSV</button>
+        </div>
+        <div class="muted small" id="lastUpdated" style="margin-bottom:8px"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>เลขที่คำร้อง</th><th>ชื่อ - นามสกุล</th><th>รหัสนักศึกษา</th><th>คณะวิชา</th><th>วันที่ยื่น</th><th>สถานะ</th></tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="emptyBox" hidden>ไม่พบคำร้อง</div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="dlg">
+    <div class="dlg-head">
+      <div><b id="dlgTitle"></b> <span id="dlgBadge"></span></div>
+      <button class="icon-btn" id="dlgClose" type="button" aria-label="ปิด">✕</button>
+    </div>
+    <div class="dlg-body">
+      <div>
+        <div class="photo-box" id="dlgPhoto"></div>
+        <a class="btn sm block" id="dlgDownload" style="margin-top:8px" hidden>ดาวน์โหลดรูป</a>
+      </div>
+      <div>
+        <dl class="kv" id="dlgInfo"></dl>
+        <form id="updateForm">
+          <div class="field">
+            <label for="dlgStatus">เปลี่ยนสถานะ</label>
+            <select class="input" id="dlgStatus"></select>
+          </div>
+          <div class="field">
+            <label for="dlgNote">หมายเหตุ (ส่งถึงผู้ยื่นทาง LINE)</label>
+            <textarea class="input" id="dlgNote" rows="3" maxlength="500" placeholder="เช่น รับบัตรได้ที่งานทะเบียน ชั้น 1 ในวันและเวลาราชการ"></textarea>
+          </div>
+          <button class="btn primary block" id="saveBtn" type="submit">บันทึกและแจ้งเตือนผู้ยื่น</button>
+        </form>
+        <details open>
+          <summary>ประวัติสถานะ</summary>
+          <div id="dlgHistory"></div>
+        </details>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="admin.js"></script>
+</body>
+</html>

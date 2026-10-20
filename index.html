@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>คำร้องขอทำบัตรนักศึกษา</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="config.js"></script>
+  <script src="common.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><div class="logo">ID</div>คำร้องขอทำบัตรนักศึกษา</div>
+    <div class="spacer"></div>
+    <div class="user" id="userBox"></div>
+    <button class="icon-btn" id="themeBtn" type="button"></button>
+  </header>
+
+  <main class="container">
+    <div id="loadingView"><div class="spinner"></div></div>
+
+    <section id="loginView" class="card center" hidden>
+      <h2>ยื่นคำร้องขอทำบัตรนักศึกษา</h2>
+      <p class="muted">เข้าสู่ระบบด้วย LINE เพื่อยื่นคำร้องและรับการแจ้งเตือนสถานะผ่าน LINE</p>
+      <button class="btn line" id="loginBtn" type="button">เข้าสู่ระบบด้วย LINE</button>
+    </section>
+
+    <section id="appView" hidden>
+      <nav class="tabs">
+        <button type="button" data-tab="form" class="active">ยื่นคำร้อง</button>
+        <button type="button" data-tab="mine">คำร้องของฉัน <span class="count" id="mineCount" hidden></span></button>
+      </nav>
+
+      <div id="tab-form">
+        <div class="notice success" id="successBox" hidden></div>
+        <div class="notice" id="activeBox" hidden></div>
+
+        <form id="reqForm" novalidate>
+          <div class="card form-head">
+            <h1>แบบฟอร์มขอทำบัตรนักศึกษา</h1>
+            <p>โปรดแจ้งรายละเอียดต่าง ๆ ให้ครบถ้วนตามหัวข้อที่กำหนด</p>
+            <p><b>หมายเหตุ *** การดำเนินการจะใช้ระยะเวลาประมาณ 7 วันทำการ หลังจากได้รับข้อมูลครบถ้วน ***</b></p>
+            <p class="req small">* ระบุว่าเป็นคำถามที่จำเป็น</p>
+          </div>
+
+          <div class="card q-card">
+            <label class="q-title" for="email">อีเมล <span class="req">*</span></label>
+            <input class="input" id="email" type="email" maxlength="150" autocomplete="email" placeholder="อีเมลของคุณ" required>
+          </div>
+
+          <div class="card q-card">
+            <div class="q-title" id="pickupTitle">เลือกสถานที่รับบัตรนักศึกษา <span class="req">*</span></div>
+            <div class="q-desc">กรณีเลือก อื่น ๆ โปรดใส่เบอร์โทรศัพท์ติดต่อกลับ</div>
+            <div class="radio-list" id="pickupList" role="radiogroup" aria-labelledby="pickupTitle"></div>
+          </div>
+
+          <div class="card q-card">
+            <label class="q-title" for="phone">เบอร์โทรศัพท์ ที่สามารถติดต่อได้ <span class="req">*</span></label>
+            <input class="input" id="phone" type="tel" inputmode="tel" maxlength="20" autocomplete="tel" placeholder="คำตอบของคุณ" required>
+          </div>
+
+          <div class="card q-card">
+            <label class="q-title" for="fullName">คำนำหน้า ชื่อ - นามสกุล <span class="req">*</span></label>
+            <div class="q-desc">*** กรุณาใส่คำนำหน้าด้วยนะครับ ***</div>
+            <input class="input" id="fullName" maxlength="200" autocomplete="name" placeholder="เช่น นางสาวสมหญิง ใจดี" required>
+          </div>
+
+          <div class="card q-card">
+            <label class="q-title" for="studentId">รหัสนักศึกษา <span class="req">*</span></label>
+            <input class="input" id="studentId" inputmode="numeric" maxlength="12" placeholder="คำตอบของคุณ" required>
+          </div>
+
+          <div class="card q-card">
+            <label class="q-title" for="faculty">คณะวิชา <span class="req">*</span></label>
+            <select class="input" id="faculty" required>
+              <option value="">เลือก</option>
+            </select>
+          </div>
+
+          <div class="card q-card">
+            <div class="q-title">อัปโหลดไฟล์รูปภาพ ใช้สำหรับทำบัตรนักศึกษา <span class="req">*</span></div>
+            <div class="q-desc">*** ไฟล์รูปขนาด 2 นิ้ว *** ระบบจะตั้งชื่อไฟล์เป็นรหัสนักศึกษาให้อัตโนมัติ</div>
+            <label class="upload" for="photoInput">
+              <div class="preview" id="photoPreview">📷</div>
+              <div>
+                <div style="font-weight:600">เพิ่มไฟล์</div>
+                <div class="muted small" id="photoName">อัปโหลดไฟล์รูปภาพ 1 รายการ ขนาดสูงสุด 10 MB</div>
+              </div>
+            </label>
+            <input type="file" id="photoInput" accept="image/*" hidden>
+          </div>
+
+          <div class="card q-card">
+            <label class="q-title" for="reason">เหตุผลในการขอทำบัตรนักศึกษา <span class="req">*</span></label>
+            <textarea class="input" id="reason" rows="3" maxlength="1000" placeholder="คำตอบของคุณ" required></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn primary" id="submitBtn" type="submit">ส่ง</button>
+            <button class="btn link" id="clearBtn" type="button">ล้างแบบฟอร์ม</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="tab-mine" hidden>
+        <div id="mineList"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="user.js"></script>
+</body>
+</html>

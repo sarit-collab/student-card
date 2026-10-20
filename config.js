@@ -4,7 +4,7 @@
 // ถ้าเว้น API_URL ว่างไว้ ระบบจะทำงานใน "โหมดทดลอง" (เก็บข้อมูลในเบราว์เซอร์นี้เท่านั้น, รหัสผู้ดูแล = admin)
 window.CONFIG = {
   API_URL: 'https://script.google.com/macros/s/AKfycbzAaxW2ClRglfpwfUsc6T7MqHjrdTfi5r1CmnThSRrCt8e1BNVJX72WAA-JvZutpYQH4A/exec',
-  LIFF_ID: '',
+  LIFF_ID: '2012119896-WX54sK1D',
 
   // ต้องตรงกับ PICKUP_LOCATIONS ใน Code.gs
   PICKUP_LOCATIONS: [

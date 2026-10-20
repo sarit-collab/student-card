@@ -42,6 +42,8 @@ function showApp(profile) {
     (profile.pictureUrl ? `<img src="${UI.esc(profile.pictureUrl)}" alt="">` : '') +
     `<span>${UI.esc(profile.displayName)}</span>`;
   show('appView');
+  // ?tab=mine (ใช้จากปุ่ม "ติดตามสถานะ" ใน Rich menu) เปิดแท็บคำร้องของฉันทันที
+  if (new URLSearchParams(location.search).get('tab') === 'mine') switchTab('mine');
   loadMine();
   setInterval(() => { if (!document.hidden) loadMine(true); }, CONFIG.REFRESH_SECONDS * 1000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) loadMine(true); });

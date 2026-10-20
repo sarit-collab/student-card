@@ -52,8 +52,16 @@ async function callUser(action, data) {
     return await Api.call(action, Object.assign({ idToken }, data));
   } catch (e) {
     if (e.code === 'TOKEN_EXPIRED' && !CONFIG.DEMO) {
-      liff.logout();
-      liff.login({ redirectUri: location.href });
+      // ล็อกอินใหม่ได้ครั้งเดียวต่อนาที กันวนลูปถ้าตั้งค่า channel ผิด
+      let last = 0;
+      try { last = Number(sessionStorage.getItem('relogin_at')) || 0; } catch (err) { /* ignore */ }
+      if (Date.now() - last > 60000) {
+        try { sessionStorage.setItem('relogin_at', String(Date.now())); } catch (err) { /* ignore */ }
+        liff.logout();
+        liff.login({ redirectUri: location.href });
+      } else {
+        UI.toast('ยืนยันตัวตน LINE ไม่สำเร็จ กรุณาติดต่อผู้ดูแลระบบ', 'error');
+      }
     }
     throw e;
   }

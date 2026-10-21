@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ผู้ดูแลระบบบัตรนักศึกษา</title>
-  <link rel="stylesheet" href="styles.css?v=5">
-  <script src="config.js?v=5"></script>
-  <script src="common.js?v=5"></script>
+  <link rel="stylesheet" href="styles.css?v=6">
+  <script src="config.js?v=6"></script>
+  <script src="common.js?v=6"></script>
 </head>
 <body>
   <header class="topbar">
@@ -36,6 +36,12 @@
         <div class="toolbar">
           <input class="input" id="search" type="search" placeholder="ค้นหา เลขที่คำร้อง / ชื่อ / รหัสนักศึกษา / เบอร์โทร">
           <select class="input" id="facultyFilter" style="flex:0 1 260px"><option value="">ทุกคณะ</option></select>
+          <select class="input" id="pickupFilter" style="flex:0 1 300px"><option value="">ทุกสถานที่รับบัตร</option></select>
+          <select class="input" id="sortBy" style="flex:0 1 240px">
+            <option value="pickup">เรียงตามสถานที่รับบัตร</option>
+            <option value="newest">เรียงตามวันที่ยื่น (ล่าสุดก่อน)</option>
+            <option value="oldest">เรียงตามวันที่ยื่น (เก่าสุดก่อน)</option>
+          </select>
           <button class="btn sm" id="refreshBtn" type="button">รีเฟรช</button>
           <button class="btn sm" id="exportBtn" type="button">ส่งออก CSV</button>
         </div>
@@ -43,7 +49,7 @@
         <div class="table-wrap">
           <table>
             <thead>
-              <tr><th>เลขที่คำร้อง</th><th>ชื่อ - นามสกุล</th><th>รหัสนักศึกษา</th><th>คณะวิชา</th><th>วันที่ยื่น</th><th>สถานะ</th></tr>
+              <tr><th>เลขที่คำร้อง</th><th>ชื่อ - นามสกุล</th><th>รหัสนักศึกษา</th><th>คณะวิชา</th><th>สถานที่รับบัตร</th><th>วันที่ยื่น</th><th>สถานะ</th></tr>
             </thead>
             <tbody id="rows"></tbody>
           </table>
@@ -84,6 +90,6 @@
     </div>
   </dialog>
 
-  <script src="admin.js?v=5"></script>
+  <script src="admin.js?v=6"></script>
 </body>
 </html>

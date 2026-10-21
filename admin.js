@@ -11,6 +11,9 @@ function init() {
   UI.demoBanner();
   $('#facultyFilter').insertAdjacentHTML('beforeend',
     CONFIG.FACULTIES.map(f => `<option>${UI.esc(f)}</option>`).join(''));
+  $('#pickupFilter').insertAdjacentHTML('beforeend',
+    CONFIG.PICKUP_LOCATIONS.map(p => `<option>${UI.esc(p)}</option>`).join(''));
+  try { $('#sortBy').value = localStorage.getItem('adminSort') || 'pickup'; } catch (e) { /* ignore */ }
   $('#dlgStatus').innerHTML = CONFIG.STATUSES.map(s => `<option>${UI.esc(s)}</option>`).join('');
 
   $('#loginForm').addEventListener('submit', onLogin);
@@ -19,6 +22,11 @@ function init() {
   $('#exportBtn').addEventListener('click', exportCsv);
   $('#search').addEventListener('input', render);
   $('#facultyFilter').addEventListener('change', render);
+  $('#pickupFilter').addEventListener('change', render);
+  $('#sortBy').addEventListener('change', () => {
+    try { localStorage.setItem('adminSort', $('#sortBy').value); } catch (e) { /* ignore */ }
+    render();
+  });
   $('#dlgClose').addEventListener('click', () => $('#dlg').close());
   $('#updateForm').addEventListener('submit', onUpdate);
 
@@ -72,7 +80,7 @@ function logout() {
 }
 
 async function load(silent) {
-  if (!silent) $('#rows').innerHTML = '<tr><td colspan="6"><div class="spinner"></div></td></tr>';
+  if (!silent) $('#rows').innerHTML = '<tr><td colspan="7"><div class="spinner"></div></td></tr>';
   try {
     allRows = await adminCall('adminList');
     $('#lastUpdated').textContent = 'อัปเดตล่าสุด ' + UI.fmt(new Date().toISOString()) +
@@ -86,11 +94,29 @@ async function load(silent) {
 function filtered() {
   const q = $('#search').value.trim().toLowerCase();
   const fac = $('#facultyFilter').value;
-  return allRows.filter(r =>
+  const pickup = $('#pickupFilter').value;
+  const rows = allRows.filter(r =>
     (!statusFilter || r.status === statusFilter) &&
     (!fac || r.faculty === fac) &&
-    (!q || [r.requestId, r.fullName, r.studentId, r.email, r.phone, r.faculty, r.displayName]
+    (!pickup || r.pickupLocation === pickup) &&
+    (!q || [r.requestId, r.fullName, r.studentId, r.email, r.phone, r.faculty, r.pickupLocation, r.displayName]
       .join(' ').toLowerCase().includes(q)));
+  return sortRows(rows);
+}
+
+/** เรียงตามสถานที่รับบัตร (ตามลำดับใน config) แล้วตามวันที่ยื่นล่าสุด หรือเรียงตามวันที่อย่างเดียว */
+function sortRows(rows) {
+  const by = $('#sortBy').value;
+  const time = r => new Date(r.createdAt).getTime() || 0;
+  const place = r => {
+    const i = CONFIG.PICKUP_LOCATIONS.indexOf(r.pickupLocation);
+    return i < 0 ? CONFIG.PICKUP_LOCATIONS.length : i;
+  };
+  return rows.slice().sort((a, b) => {
+    if (by === 'oldest') return time(a) - time(b);
+    if (by === 'pickup' && place(a) !== place(b)) return place(a) - place(b);
+    return time(b) - time(a);
+  });
 }
 
 function render() {
@@ -110,16 +136,29 @@ function render() {
 
   const rows = filtered();
   $('#emptyBox').hidden = rows.length > 0;
-  $('#rows').innerHTML = rows.map(r => `
+  const grouped = $('#sortBy').value === 'pickup';
+  const groupCount = {};
+  rows.forEach(r => { groupCount[r.pickupLocation] = (groupCount[r.pickupLocation] || 0) + 1; });
+  let lastPlace = null;
+  $('#rows').innerHTML = rows.map(r => {
+    let head = '';
+    if (grouped && r.pickupLocation !== lastPlace) {
+      lastPlace = r.pickupLocation;
+      head = `<tr class="group-row"><td colspan="7">📍 ${UI.esc(r.pickupLocation || 'ไม่ระบุสถานที่')}
+        <span class="muted small">(${groupCount[r.pickupLocation]} รายการ)</span></td></tr>`;
+    }
+    return head + `
     <tr data-id="${UI.esc(r.requestId)}">
       <td data-label="เลขที่"><span class="req-id">${UI.esc(r.requestId)}</span></td>
       <td data-label="ชื่อ">${UI.esc(UI.fullName(r))}</td>
       <td data-label="รหัสนักศึกษา">${UI.esc(r.studentId)}</td>
       <td data-label="คณะ">${UI.esc(r.faculty)}</td>
+      <td data-label="รับบัตรที่">${UI.esc(r.pickupLocation)}</td>
       <td data-label="วันที่ยื่น">${UI.esc(UI.fmt(r.createdAt))}</td>
       <td>${UI.badge(r.status)}</td>
-    </tr>`).join('');
-  $('#rows').querySelectorAll('tr').forEach(tr => tr.addEventListener('click', () => openDetail(tr.dataset.id)));
+    </tr>`;
+  }).join('');
+  $('#rows').querySelectorAll('tr[data-id]').forEach(tr => tr.addEventListener('click', () => openDetail(tr.dataset.id)));
 }
 
 async function openDetail(id) {

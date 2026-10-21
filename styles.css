@@ -217,6 +217,8 @@ th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--bo
 th { font-size: .8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; }
 tbody tr { cursor: pointer; }
 tbody tr:hover { background: var(--surface-2); }
+tbody tr.group-row, tbody tr.group-row:hover { cursor: default; background: var(--primary-soft); }
+tbody tr.group-row td { font-weight: 700; color: var(--primary); padding-top: 12px; padding-bottom: 12px; }
 @media (max-width: 720px) {
   thead { display: none; }
   table, tbody, tr, td { display: block; width: 100%; }

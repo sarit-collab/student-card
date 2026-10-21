@@ -84,7 +84,13 @@ const Demo = {
         r.status = b.status;
         r.note = b.note || '';
         r.updatedAt = now;
-        r.history.push({ at: now, status: b.status, note: r.note, by: 'ผู้ดูแล' });
+        r.history.push({ at: now, status: b.status, note: r.note, by: 'ผู้ดูแล', notified: b.notify !== false });
+        this.save(rows);
+        return this.pub(r);
+      }
+      case 'adminNotify': {
+        const r = find(b.requestId);
+        r.history.push({ at: now, status: r.status, note: b.note || 'ส่งแจ้งเตือนซ้ำ', by: 'ผู้ดูแล', notified: true });
         this.save(rows);
         return this.pub(r);
       }
@@ -120,7 +126,7 @@ const UI = {
   historyHtml(history) {
     return `<ol class="timeline">${(history || []).slice().reverse().map(h => `
       <li>
-        <div class="tl-head">${UI.badge(h.status)} <span class="muted">${UI.esc(UI.fmt(h.at))} · ${UI.esc(h.by || '')}</span></div>
+        <div class="tl-head">${UI.badge(h.status)} <span class="muted">${UI.esc(UI.fmt(h.at))} · ${UI.esc(h.by || '')}${h.notified ? ' · 🔔 แจ้ง LINE แล้ว' : ''}</span></div>
         ${h.note ? `<div class="tl-note">${UI.esc(h.note)}</div>` : ''}
       </li>`).join('')}</ol>`;
   },

@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ผู้ดูแลระบบบัตรนักศึกษา</title>
-  <link rel="stylesheet" href="styles.css?v=6">
-  <script src="config.js?v=6"></script>
-  <script src="common.js?v=6"></script>
+  <link rel="stylesheet" href="styles.css?v=7">
+  <script src="config.js?v=7"></script>
+  <script src="common.js?v=7"></script>
 </head>
 <body>
   <header class="topbar">
@@ -77,10 +77,14 @@
             <select class="input" id="dlgStatus"></select>
           </div>
           <div class="field">
-            <label for="dlgNote">หมายเหตุ (ส่งถึงผู้ยื่นทาง LINE)</label>
+            <label for="dlgNote">หมายเหตุ</label>
             <textarea class="input" id="dlgNote" rows="3" maxlength="500" placeholder="เช่น รับบัตรได้ที่งานทะเบียน ชั้น 1 ในวันและเวลาราชการ"></textarea>
           </div>
-          <button class="btn primary block" id="saveBtn" type="submit">บันทึกและแจ้งเตือนผู้ยื่น</button>
+          <div class="btn-row">
+            <button class="btn" id="saveBtn" type="submit">💾 บันทึก</button>
+            <button class="btn primary" id="notifyBtn" type="button">🔔 แจ้งเตือน</button>
+          </div>
+          <p class="muted small" style="margin:8px 0 0">บันทึก = เก็บสถานะ/หมายเหตุ ไม่ส่ง LINE · แจ้งเตือน = ส่งสถานะและหมายเหตุถึงผู้ยื่นทาง LINE (บันทึกให้ด้วยถ้ามีการเปลี่ยน)</p>
         </form>
         <details open>
           <summary>ประวัติสถานะ</summary>
@@ -90,6 +94,6 @@
     </div>
   </dialog>
 
-  <script src="admin.js?v=6"></script>
+  <script src="admin.js?v=7"></script>
 </body>
 </html>

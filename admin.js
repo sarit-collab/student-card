@@ -29,6 +29,7 @@ function init() {
   });
   $('#dlgClose').addEventListener('click', () => $('#dlg').close());
   $('#updateForm').addEventListener('submit', onUpdate);
+  $('#notifyBtn').addEventListener('click', onNotify);
 
   try { adminToken = sessionStorage.getItem('adminToken'); } catch (e) { /* ignore */ }
   if (adminToken) enterDashboard();
@@ -199,6 +200,7 @@ async function openDetail(id) {
   }
 }
 
+/** ปุ่ม "บันทึก": เก็บสถานะ/หมายเหตุ โดยไม่ส่ง LINE */
 async function onUpdate(e) {
   e.preventDefault();
   if (!current) return;
@@ -208,21 +210,38 @@ async function onUpdate(e) {
     UI.toast('กรุณาเปลี่ยนสถานะหรือใส่หมายเหตุ', 'error');
     return;
   }
-  const btn = $('#saveBtn');
-  btn.disabled = true;
-  btn.textContent = 'กำลังบันทึก...';
+  await submitUpdate('adminUpdate', { requestId: current.requestId, status, note, notify: false },
+    $('#saveBtn'), id => `บันทึก ${id} แล้ว (ยังไม่ได้แจ้ง LINE)`);
+}
+
+/** ปุ่ม "แจ้งเตือน": ถ้ามีการเปลี่ยนให้บันทึกพร้อมแจ้ง ไม่งั้นส่งแจ้งสถานะปัจจุบันซ้ำ */
+async function onNotify() {
+  if (!current) return;
+  const status = $('#dlgStatus').value;
+  const note = $('#dlgNote').value.trim();
+  const changed = status !== current.status || note;
+  if (!changed && !confirm(`ส่งแจ้งเตือนสถานะ "${current.status}" ถึงผู้ยื่นอีกครั้งใช่ไหม`)) return;
+  await submitUpdate(changed ? 'adminUpdate' : 'adminNotify',
+    { requestId: current.requestId, status, note, notify: true },
+    $('#notifyBtn'), id => `แจ้งเตือน ${id} ทาง LINE แล้ว`);
+}
+
+async function submitUpdate(action, data, btn, doneMsg) {
+  const label = btn.textContent;
+  $('#saveBtn').disabled = $('#notifyBtn').disabled = true;
+  btn.textContent = 'กำลังดำเนินการ...';
   try {
-    const updated = await adminCall('adminUpdate', { requestId: current.requestId, status, note });
+    const updated = await adminCall(action, data);
     const i = allRows.findIndex(r => r.requestId === updated.requestId);
     if (i >= 0) allRows[i] = updated;
     $('#dlg').close();
     render();
-    UI.toast(`บันทึกแล้ว — แจ้งเตือน ${updated.requestId} ทาง LINE`, 'success');
+    UI.toast(doneMsg(updated.requestId), 'success');
   } catch (err) {
     UI.toast(err.message, 'error');
   } finally {
-    btn.disabled = false;
-    btn.textContent = 'บันทึกและแจ้งเตือนผู้ยื่น';
+    $('#saveBtn').disabled = $('#notifyBtn').disabled = false;
+    btn.textContent = label;
   }
 }
 

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>พิมพ์ใบแปะซองบัตรนักศึกษา</title>
+  <link rel="stylesheet" href="styles.css?v=8">
+  <link rel="stylesheet" href="envelope.css?v=8">
+  <script src="config.js?v=8"></script>
+  <script src="common.js?v=8"></script>
+</head>
+<body>
+  <header class="topbar no-print">
+    <div class="brand"><div class="logo">ID</div>พิมพ์ใบแปะซอง</div>
+    <div class="spacer"></div>
+    <a class="btn sm" href="admin.html">← กลับหน้าผู้ดูแล</a>
+    <button class="icon-btn" id="themeBtn" type="button"></button>
+  </header>
+
+  <main class="container wide">
+    <section id="loginView" class="card no-print" style="max-width:400px;margin:40px auto" hidden>
+      <h2>เข้าสู่ระบบผู้ดูแล</h2>
+      <form id="loginForm">
+        <div class="field">
+          <label for="password">รหัสผ่าน</label>
+          <input class="input" type="password" id="password" autocomplete="current-password" required>
+        </div>
+        <button class="btn primary block" id="loginBtn" type="submit">เข้าสู่ระบบ</button>
+      </form>
+    </section>
+
+    <section id="setupView" class="card no-print" hidden>
+      <div class="env-controls">
+        <div class="field">
+          <label>สถานะคำร้องที่จะพิมพ์</label>
+          <div class="chips" id="statusChips"></div>
+        </div>
+        <div class="field">
+          <label>สถานที่รับบัตร</label>
+          <div class="chips" id="placeChips"></div>
+        </div>
+        <div class="field">
+          <label for="sender">ผู้ส่ง (มุมขวาล่าง)</label>
+          <input class="input" id="sender" maxlength="100">
+        </div>
+      </div>
+      <div class="toolbar" style="margin:0">
+        <button class="btn primary" id="printBtn" type="button">🖨️ พิมพ์</button>
+        <button class="btn sm" id="reloadBtn" type="button">รีเฟรชข้อมูล</button>
+        <span class="muted small" id="summary"></span>
+      </div>
+      <p class="muted small" style="margin:8px 0 0">คลิกที่ชื่อผู้รับหรือชื่อหน่วยงานบนใบเพื่อแก้ไขได้ · ติ๊กออกรายชื่อที่ยังไม่ส่งได้ · แต่ละสถานที่พิมพ์ 1 หน้า A4</p>
+    </section>
+
+    <div id="sheets"></div>
+  </main>
+
+  <script src="envelope.js?v=8"></script>
+</body>
+</html>
